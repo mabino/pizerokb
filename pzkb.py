@@ -3,7 +3,7 @@ import os, time
 
 NULL_CHAR = chr(0)
 current_dir = os.path.dirname(os.path.realpath(__file__))
-path = os.join(current_dir,'password.txt')
+path = os.path.join(current_dir,'password.txt')
 
 def write_report(report):
 	try:
