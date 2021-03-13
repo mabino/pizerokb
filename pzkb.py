@@ -3,7 +3,7 @@ import os, time
 
 NULL_CHAR = chr(0)
 current_dir = os.path.dirname(os.path.realpath(__file__))
-path = os.path.join(current_dir,'password.txt')
+path = os.path.join(current_dir,'input.txt')
 
 def write_report(report):
 	try:
@@ -43,30 +43,24 @@ def interpret(path):
 	merged_key.update(action_key)
 	merged_key.update(function_key)
 	merged_key.update(menu_key)
-	
+
 	with open(path,'r') as script:
-		script_contents = script.read()
-	
-	# Makes a list of lines in the document.
-	for count1, line in enumerate(script_contents.split('\n')):
-		# Makes a list of the words on the current line.
-		for count2, word in enumerate(line.split(' ')):
-			if word in merged_key:
-				write_report(NULL_CHAR*2+chr(merged_key[word])+NULL_CHAR*5)
-			elif word[:6] == '\SLEEP':
-				time.sleep(int(word[6:]))
-			elif word not in merged_key and count2 < 1:
-			# Don't put a space back for the first word.
-				translate(word)
-			else:
-			# Put the space back.
-				translate(' ')
-				translate(word)
-		if count1 < len(script_contents.split('\n')) - 1:
-			# Put the new line characters back as long as it isn't the last word.
-			translate('\n')
-	# Insurance policy to make sure all the keys are released at the end.
-	write_report(NULL_CHAR*8)
+		wordlist = script.read()
+
+		for count1, line in enumerate(wordlist.split('\n')):
+			for count2, word in enumerate(line.split(' ')):
+				if word in merged_key:
+					write_report(NULL_CHAR*2+chr(merged_key[word])+NULL_CHAR*5)
+				elif word[:6] == '\SLEEP':
+					time.sleep(int(word[6:]))
+				elif word not in merged_key and count2 == 0:
+					translate(word)
+				else:
+					translate(' ')
+					translate(word)
+			if count1 == len(wordlist.split('\n')) - 2:
+				translate('\n')
+		write_report(NULL_CHAR*8)
 
 if __name__ == '__main__':
 	interpret(path)
