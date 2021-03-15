@@ -56,7 +56,7 @@ def interpret():
 		elif word[:6] == '\SLEEP':
 			time.sleep(int(word[6:]))
 		elif word in mod_key:
-			write_report(chr(mod_key[word])+NULL_CHAR+chr(word[-1])+NULL_CHAR*5)
+			write_report(chr(mod_key[word])+NULL_CHAR+chr(transcribe(word[-1]))+NULL_CHAR*5)
 		else:
 			translate(word)
 
