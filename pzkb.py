@@ -3,7 +3,6 @@ import os, time
 
 NULL_CHAR = chr(0)
 current_dir = os.path.dirname(os.path.realpath(__file__))
-path = os.path.join(current_dir,'input.txt')
 
 def write_report(report):
 	try:
@@ -19,6 +18,7 @@ def transcribe(key):
 		write_report(NULL_CHAR*2+chr(lower_case[key])+NULL_CHAR*5)
 	elif key in upper_case:
 		write_report(chr(32)+NULL_CHAR+chr(upper_case[key])+NULL_CHAR*5)
+
 write_report(NULL_CHAR*5)
 
 def translate(doc):
@@ -33,7 +33,8 @@ def translate(doc):
 			print(hit_key.strip("'"))
 			transcribe(hit_key.strip("'"))
 
-def interpret(path):
+def interpret():
+	typing = True
 	action_key = {'\ENTER':40,'\ESCAPE':41,'\DELETE':42,'\TAB':43,'\SPACE':44,'\PRINT':70,'\SCROLL':71,'\PAUSE':72,'\INSERT':73,'\HOME':74,'\PAGEUP':75,'\END':77,'\PAGEDOWN':78,'\RIGHTARROW':79,'\LEFTARROW':80,'\DOWNARROW':81,r'\UPARROW':82,'\POWER':102,'\LEFTCTRL':224,'\LEFTSHIFT':225,'\LEFTALT':226,'\LEFTGUI':227,'\RIGHTCTRL':228,'\RIGHTSHIFT':229,'\RIGHTALT':230,'\RIGHTGUI':231}
 	function_key = {'\F1':58,'\F2':59,'\F3':60,'\F4':61,'\F5':62,'\F6':63,'\F7':64,'\F8':65,'\F9':66,'\F10':67,'\F11':68,'\F12':69,'\F13':104,'\F14':105,'\F15':106,'\F16':107,'\F17':108,'\F18':109,'\F19':110,'\F20':111,'\F21':112,'\F22':113,'\F23':114,'\F24':115}
 	menu_key = {'\EXECUTE':116,'\HELP':117,'\MENU':118,'\SELECT':119,'\STOP':120,'\AGAIN':121,r'\UNDO':122,'\CUT':123,'\COPY':124,'\PASTE':125,'\FIND':126,'\MUTE':127,'\VOLUP':128,'\VOLDOWN':129,'\CAPLOCK':130,r'\NUMLOCK':131,'\SCROLLLOCk':132}
@@ -44,23 +45,19 @@ def interpret(path):
 	merged_key.update(function_key)
 	merged_key.update(menu_key)
 
-	with open(path,'r') as script:
-		wordlist = script.read()
+	while typing:
+		word = input('~~#:')
+		
+		if word  == 'exit()':
+			typing = False
+		elif word in merged_key:
+			write_report(NULL_CHAR*2+chr(merged_key[word])+NULL_CHAR*5)
+		elif word[:6] == '\SLEEP':
+			time.sleep(int(word[6:]))
+		else:
+			translate(word)
 
-		for count1, line in enumerate(wordlist.split('\n')):
-			for count2, word in enumerate(line.split(' ')):
-				if word in merged_key:
-					write_report(NULL_CHAR*2+chr(merged_key[word])+NULL_CHAR*5)
-				elif word[:6] == '\SLEEP':
-					time.sleep(int(word[6:]))
-				elif word not in merged_key and count2 == 0:
-					translate(word)
-				else:
-					translate(' ')
-					translate(word)
-			if count1 == len(wordlist.split('\n')) - 2:
-				translate('\n')
 		write_report(NULL_CHAR*8)
 
 if __name__ == '__main__':
-	interpret(path)
+	interpret()
